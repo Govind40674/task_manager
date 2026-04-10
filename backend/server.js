@@ -19,7 +19,9 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://task-manager-frontend-rc65.onrender.com"
-  ]
+  ],
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  credentials: true
 }));
 // Middleware
 
