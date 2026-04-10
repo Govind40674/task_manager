@@ -2,9 +2,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-const express = require("express");
+// const express = require("express");
+import express from "express";
 
-const cors = require("cors");
+// const cors = require("cors");
+import cors from "cors";
+
 
 
 
