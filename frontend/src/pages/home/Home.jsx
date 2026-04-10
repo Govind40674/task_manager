@@ -19,7 +19,7 @@ function Home() {
     setError("");
     try {
       const res = await getTasks();
-      setTasks(res.data.data);
+      setTasks(res.data.data || []);
     } catch {
       setError("Failed to load tasks");
     }
@@ -52,11 +52,42 @@ function Home() {
     fetchTasks();
   };
 
-  const filteredTasks = (tasks || []).filter((task) => {
-    if (filter === "completed") return task.completed;
-    if (filter === "uncompleted") return !task.completed;
-    return true;
-  });
+  /* ✅ Reusable Task Card */
+  const TaskCard = ({ task }) => (
+    <div className={styles.taskCard}>
+      <div className={styles.taskInfo}>
+        <span
+          className={`${styles.taskText} ${
+            task.completed ? styles.completed : ""
+          }`}
+        >
+          {task.title}
+        </span>
+
+        <span className={styles.taskDate}>
+          Created: {new Date(task.createdAt).toLocaleString()}
+        </span>
+      </div>
+
+      <div>
+        {!task.completed && (
+          <button
+            className={styles.completeBtn}
+            onClick={() => handleToggle(task.id)}
+          >
+            ✔
+          </button>
+        )}
+
+        <button
+          className={styles.deleteBtn}
+          onClick={() => handleDelete(task.id)}
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -65,6 +96,7 @@ function Home() {
       <div className={`${styles.page} ${darkMode ? styles.dark : styles.light}`}>
         <div className={styles.container}>
 
+          {/* Theme Toggle */}
           <button
             className={styles.toggleBtn}
             onClick={() => setDarkMode(!darkMode)}
@@ -74,6 +106,7 @@ function Home() {
 
           <h1 className={styles.title}>✨ Task Manager</h1>
 
+          {/* Input */}
           <div className={styles.inputContainer}>
             <input
               className={styles.input}
@@ -86,68 +119,84 @@ function Home() {
             </button>
           </div>
 
+          {/* Tabs */}
           <div className={styles.filters}>
             <button
-              className={filter === "all" ? styles.activeBtn : styles.filterBtn}
+              className={`${styles.filterBtn} ${
+                filter === "all" ? styles.activeBtn : ""
+              }`}
               onClick={() => setFilter("all")}
             >
               All
             </button>
 
             <button
-              className={filter === "completed" ? styles.activeBtn : styles.filterBtn}
+              className={`${styles.filterBtn} ${
+                filter === "completed" ? styles.activeBtn : ""
+              }`}
               onClick={() => setFilter("completed")}
             >
               Completed
             </button>
 
             <button
-              className={filter === "uncompleted" ? styles.activeBtn : styles.filterBtn}
+              className={`${styles.filterBtn} ${
+                filter === "uncompleted" ? styles.activeBtn : ""
+              }`}
               onClick={() => setFilter("uncompleted")}
             >
               Pending
             </button>
           </div>
 
+          {/* Loading / Error */}
           {loading && <p>Loading...</p>}
           {error && <p className={styles.error}>{error}</p>}
 
+          {/* Sections */}
           <div>
-            {filteredTasks.map((task) => (
-              <div key={task.id} className={styles.taskCard}>
-                <div className={styles.taskInfo}>
-                  <span
-                    className={`${styles.taskText} ${
-                      task.completed ? styles.completed : ""
-                    }`}
-                  >
-                    {task.title}
-                  </span>
+            {filter === "all" && (
+              <>
+                <h3 className={styles.sectionTitle}>All Tasks</h3>
+                {tasks.length === 0 ? (
+                  <p>No tasks available</p>
+                ) : (
+                  tasks.map((task) => (
+                    <TaskCard key={task.id} task={task} />
+                  ))
+                )}
+              </>
+            )}
 
-                  <span className={styles.taskDate}>
-                    Created: {new Date(task.createdAt).toLocaleString()}
-                  </span>
-                </div>
+            {filter === "completed" && (
+              <>
+                <h3 className={styles.sectionTitle}>Completed Tasks</h3>
+                {tasks.filter((t) => t.completed).length === 0 ? (
+                  <p>No completed tasks</p>
+                ) : (
+                  tasks
+                    .filter((t) => t.completed)
+                    .map((task) => (
+                      <TaskCard key={task.id} task={task} />
+                    ))
+                )}
+              </>
+            )}
 
-                <div>
-                  {!task.completed && (
-                    <button
-                      className={styles.completeBtn}
-                      onClick={() => handleToggle(task.id)}
-                    >
-                      ✔
-                    </button>
-                  )}
-
-                  <button
-                    className={styles.deleteBtn}
-                    onClick={() => handleDelete(task.id)}
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
-            ))}
+            {filter === "uncompleted" && (
+              <>
+                <h3 className={styles.sectionTitle}>Pending Tasks</h3>
+                {tasks.filter((t) => !t.completed).length === 0 ? (
+                  <p>No pending tasks</p>
+                ) : (
+                  tasks
+                    .filter((t) => !t.completed)
+                    .map((task) => (
+                      <TaskCard key={task.id} task={task} />
+                    ))
+                )}
+              </>
+            )}
           </div>
 
         </div>
