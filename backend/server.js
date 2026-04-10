@@ -32,6 +32,13 @@ let tasks = [];
 const findTask = (id) => tasks.find((t) => t.id === id);
 
 
+
+
+app.get("/", (req, res) => {
+  res.send("Backend is running ✅");
+});
+
+
 // ✅ GET all tasks
 app.get("/tasks", (req, res) => {
   res.json({
