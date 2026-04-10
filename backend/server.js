@@ -1,3 +1,4 @@
+console.log("✅ NEW SERVER RUNNING");
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -20,8 +21,8 @@ app.use(cors({
     "http://localhost:5173",
     "https://task-manager-frontend-rc65.onrender.com"
   ],
-  methods: ["GET", "POST", "PATCH", "DELETE"],
-  credentials: true
+  
+ 
 }));
 // Middleware
 
