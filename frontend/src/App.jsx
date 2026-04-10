@@ -40,6 +40,11 @@ function App() {
     fetchTasks();
   }, []);
 
+//   useEffect(() => {
+//   fetch("https://task-manager-backend.onrender.com")
+//     .then(() => fetchTasks());
+// }, []);
+
   // Add task
   const handleAdd = async () => {
     if (!title.trim()) return;
