@@ -13,8 +13,14 @@ import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT;
-app.use(cors());
+// app.use(cors());
 
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://task-manager-frontend-rc65.onrender.com"
+  ]
+}));
 // Middleware
 
 app.use(express.json());
